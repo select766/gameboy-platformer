@@ -7,6 +7,8 @@
         "rand.h": "c",
         "config.h": "c",
         "bg_tile.h": "c",
-        "platformer.h": "c"
+        "platformer.h": "c",
+        "stdlib.h": "c",
+        "qlearning.h": "c"
     }
 }

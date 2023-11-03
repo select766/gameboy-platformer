@@ -12,7 +12,7 @@ void PlatformerReset(PlatformerState *state)
     state->isMissed = 0;
 }
 
-PlatformerReward PlatformerStep(PlatformerState *state, PlatformerAction action)
+Reward PlatformerStep(PlatformerState *state, PlatformerAction action)
 {
     if (state->done)
     {
@@ -117,16 +117,16 @@ PlatformerReward PlatformerStep(PlatformerState *state, PlatformerAction action)
         // ゴールした時の高さに応じたスコア。ステージ下端からキャラクターの下端までの距離がスコアになる。最小で1ブロック分。
         state->score = STAGE_HEIGHT * TILE_SIZE - state->y;
 
-        return (PlatformerReward)state->score;
+        return (Reward)(state->score * REWARD_SCALE);
     }
     else
     {
         if (!xCollision)
         {
             state->x += 1;
-            return 1; // 新しいところに行くインセンティブ
+            return REWARD_SCALE; // 新しいところに行くインセンティブ
         }
 
-        return -1; // 壁にぶつかってる間-1 => 速くゴールするインセンティブ
+        return -REWARD_SCALE; // 壁にぶつかってる間-1 => 速くゴールするインセンティブ
     }
 }

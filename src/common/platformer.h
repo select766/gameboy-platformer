@@ -9,14 +9,14 @@ typedef struct
     uint8_t x; // 左端ピクセル
     uint8_t y; // 下端よりひとつ下のピクセル（上端だとマイナスになるので）
     int8_t ySpeed; // y方向の速度(正なら落ちる方向)
-    uint8_t done; // ゴールしたら1
+    uint8_t done; // ゲームが終了したら1(ミスかゴール)
     uint8_t score; // 現在のスコア(ゴール時にのみ加算される)
     uint8_t isOnFloor; // 床に接しているかどうか
-    uint8_t isMissed; // 穴に落ちたかどうか
+    uint8_t isMissed; // 穴に落ちたか・またはタイムアップしたかどうか（doneかつゴールしていない場合）
 } PlatformerState;
 
 typedef uint8_t PlatformerAction;
-typedef int16_t PlatformerReward;
+typedef int16_t Reward;
 
 #define TILE_SIZE 8
 #define STAGE_TOP_OFFSET 8 // 画面上端からステージ上端までの距離（タイル単位）
@@ -27,7 +27,8 @@ typedef int16_t PlatformerReward;
 #define TILE_ID_FLOOR 0x81
 #define TILE_ID_GOAL 0x82
 #define STEPS_LIMIT 1000 // このステップ数で終了
-#define REWARD_MISS -100 // 穴に落ちた時・タイムアップの報酬
+#define REWARD_SCALE 128 // 報酬のスケール。
+#define REWARD_MISS (-10 * REWARD_SCALE) // 穴に落ちた時・タイムアップの報酬
 
 void PlatformerReset(PlatformerState *state);
-PlatformerReward PlatformerStep(PlatformerState *state, PlatformerAction action);
+Reward PlatformerStep(PlatformerState *state, PlatformerAction action);
