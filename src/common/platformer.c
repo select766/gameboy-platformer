@@ -1,6 +1,6 @@
 #include "platformer.h"
 
-void initGameState(GameState *state)
+void PlatformerReset(PlatformerState *state)
 {
     // mapDataは初期化されない
     state->x = 0;
@@ -13,7 +13,7 @@ void initGameState(GameState *state)
     state->isMissed = 0;
 }
 
-void stepGameState(GameState *state, GameAction action)
+void PlatformerStep(PlatformerState *state, PlatformerAction action)
 {
     if (state->done)
     {

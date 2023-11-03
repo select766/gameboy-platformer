@@ -12,9 +12,9 @@ typedef struct
     uint8_t isOnFloor; // 床に接しているかどうか
     uint8_t isMissed; // 穴に落ちたかどうか
     const unsigned char *mapData;
-} GameState;
+} PlatformerState;
 
-typedef uint8_t GameAction;
+typedef uint8_t PlatformerAction;
 
 #define TILE_SIZE 8
 #define STAGE_TOP_OFFSET 8 // 画面上端からステージ上端までの距離（タイル単位）
@@ -25,5 +25,5 @@ typedef uint8_t GameAction;
 #define TILE_ID_FLOOR 0x81
 #define TILE_ID_GOAL 0x82
 
-void initGameState(GameState *state);
-void stepGameState(GameState *state, GameAction action);
+void PlatformerReset(PlatformerState *state);
+void PlatformerStep(PlatformerState *state, PlatformerAction action);

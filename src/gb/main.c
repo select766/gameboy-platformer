@@ -3,7 +3,7 @@
 #include <gb/gb.h>
 #include <gbdk/console.h>
 
-#include "platformer.h"
+#include "../common/platformer.h"
 #include "bg_tile.h"
 #include "fg_tile.h"
 
@@ -28,8 +28,8 @@ const unsigned char MapData[] = {
 
 void oneGame()
 {
-    GameState state;
-    initGameState(&state);
+    PlatformerState state;
+    PlatformerReset(&state);
     state.mapData = MapData;
 
     uint8_t lastButton = 0;
@@ -48,14 +48,14 @@ void oneGame()
         }
         // 入力
         uint8_t button = joypad();
-        GameAction action = 0;
+        PlatformerAction action = 0;
         if ((button & J_A) && !(lastButton & J_A))
         {
             action = 1;
         }
         lastButton = button;
         // 状態更新
-        stepGameState(&state, action);
+        PlatformerStep(&state, action);
     }
 }
 
