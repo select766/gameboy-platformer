@@ -30,7 +30,6 @@ void oneGame()
 {
     PlatformerState state;
     PlatformerReset(&state);
-    state.mapData = MapData;
 
     uint8_t lastButton = 0;
     while (1)

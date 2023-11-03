@@ -2,7 +2,6 @@
 
 void PlatformerReset(PlatformerState *state)
 {
-    // mapDataは初期化されない
     state->x = 0;
     state->y = TILE_SIZE * (STAGE_HEIGHT - 1); // 一番下のタイルの上端
     state->ySpeed = 0;
@@ -13,12 +12,12 @@ void PlatformerReset(PlatformerState *state)
     state->isMissed = 0;
 }
 
-void PlatformerStep(PlatformerState *state, PlatformerAction action)
+PlatformerReward PlatformerStep(PlatformerState *state, PlatformerAction action)
 {
     if (state->done)
     {
         // ゴール済みならもう動かない
-        return;
+        return 0;
     }
     // 地面の高さを判定
     // x座標 [x, x + TILE_SIZE) にあるタイルを調べる
@@ -31,7 +30,7 @@ void PlatformerStep(PlatformerState *state, PlatformerAction action)
         {
             for (uint8_t tileY = 0; tileY < STAGE_HEIGHT; tileY++)
             {
-                uint8_t tileId = state->mapData[tileY * STAGE_WIDTH + tileX];
+                uint8_t tileId = StageMap[tileY * STAGE_WIDTH + tileX];
                 if (tileId != TILE_ID_EMPTY)
                 {
                     uint8_t tileYTop = tileY * TILE_SIZE;
@@ -89,42 +88,45 @@ void PlatformerStep(PlatformerState *state, PlatformerAction action)
         uint8_t tileYHigh = (state->y - 1) / TILE_SIZE;
         for (uint8_t tileY = tileYLow; tileY <= tileYHigh; tileY++)
         {
-            uint8_t tileId = state->mapData[tileY * STAGE_WIDTH + tileX];
-            if (tileId == TILE_ID_EMPTY)
-            {
-                continue;
-            }
-            else if (tileId == TILE_ID_FLOOR)
+            uint8_t tileId = StageMap[tileY * STAGE_WIDTH + tileX];
+            if (tileId == TILE_ID_FLOOR)
             {
                 xCollision = 1;
-            }
-            else
-            {
-                // ゴール
-                goal = 1;
             }
         }
     }
 
-    if (state->y >= STAGE_HEIGHT * TILE_SIZE)
+    state->steps++;
+    if (state->steps >= STEPS_LIMIT)
+    {
+        // ステップ数の上限に達した
+        state->done = 1;
+        state->isMissed = 1;
+        return REWARD_MISS;
+    }
+    else if (state->y >= STAGE_HEIGHT * TILE_SIZE)
     {
         // 穴に落ちた
         state->done = 1;
         state->isMissed = 1;
+        return REWARD_MISS;
     }
-    else if (goal)
+    else if (state->x >= (STAGE_WIDTH - 2) * TILE_SIZE)
     {
         state->done = 1;
         // ゴールした時の高さに応じたスコア。ステージ下端からキャラクターの下端までの距離がスコアになる。最小で1ブロック分。
         state->score = STAGE_HEIGHT * TILE_SIZE - state->y;
+
+        return (PlatformerReward)state->score;
     }
     else
     {
         if (!xCollision)
         {
             state->x += 1;
+            return 1; // 新しいところに行くインセンティブ
         }
-    }
 
-    state->steps++;
+        return -1; // 壁にぶつかってる間-1 => 速くゴールするインセンティブ
+    }
 }
