@@ -6,6 +6,7 @@
         "trained.h": "c",
         "rand.h": "c",
         "config.h": "c",
-        "bg_tile.h": "c"
+        "bg_tile.h": "c",
+        "platformer.h": "c"
     }
 }
