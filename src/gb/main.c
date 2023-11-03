@@ -6,6 +6,7 @@
 #include "../common/platformer.h"
 #include "bg_tile.h"
 #include "fg_tile.h"
+#include "train.h"
 
 #define BGTileCount 4
 #define FGTileCount 2
@@ -44,7 +45,7 @@ void oneGame()
 
 void main()
 {
-    printf("PRESS START");
+    printf("START TO PLAY\nSELECT TO TRAIN\n");
     DISPLAY_OFF;
     SHOW_BKG;
     SHOW_SPRITES;
@@ -65,6 +66,10 @@ void main()
         if (button & J_START)
         {
             oneGame();
+        }
+        if (button & J_SELECT)
+        {
+            train_main();
         }
     }
 }

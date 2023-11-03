@@ -16,5 +16,6 @@ typedef struct {
 } EpisodeResult;
 
 QLearningState *QLearningStateCreate();
+PlatformerAction GetBestAction(const QLearningState *q_state, const PlatformerState* state);
 void TestEpisode(const QLearningState *q_state, EpisodeResult *episode_result);
 Reward TrainEpisode(QLearningState *q_state);

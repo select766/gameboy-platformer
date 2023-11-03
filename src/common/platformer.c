@@ -97,7 +97,7 @@ Reward PlatformerStep(PlatformerState *state, PlatformerAction action)
     }
 
     state->steps++;
-    if (state->steps >= STEPS_LIMIT)
+    if (state->steps >= MAX_EPISODE_LEN)
     {
         // ステップ数の上限に達した
         state->done = 1;
