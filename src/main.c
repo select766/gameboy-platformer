@@ -12,8 +12,12 @@
 
 #define BGTileCount 4
 #define FGTileCount 2
+#define TILE_SIZE 8
+#define STAGE_WIDTH 20 // タイル単位
+#define STAGE_HEIGHT 10 // タイル単位
+#define CHAR_HEIGHT 2 // キャラクターの高さ（タイル単位）
 
-// 上から10個のタイルがステージ。
+// 上からSTAGE_HEIGHT個のタイルがステージ。
 const unsigned char MapData[] = {
 0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x82,
 0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x83,
@@ -35,7 +39,43 @@ const unsigned char MapData[] = {
 0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,
 };
 
-int main()
+typedef struct {
+    uint8_t x;
+    uint8_t y;
+    int8_t ySpeed;
+} GameState;
+
+typedef uint8_t GameAction;
+
+void initGameState(GameState *state) {
+    state->x = 0;
+    state->y = TILE_SIZE * (STAGE_HEIGHT - CHAR_HEIGHT - 1);
+    state->ySpeed = 0;
+}
+
+void stepGameState(GameState *state, GameAction action) {
+    state->x += 1;
+    if (state->x >= STAGE_WIDTH * TILE_SIZE) {
+        state->x = 0;
+    }
+    uint8_t floorHeight = TILE_SIZE * (STAGE_HEIGHT - 1);
+    uint8_t charFootHeight = state->y + TILE_SIZE * CHAR_HEIGHT;
+    if (charFootHeight >= floorHeight) {
+        // 床に接している
+        state->y = floorHeight - TILE_SIZE * CHAR_HEIGHT;
+        if (action) {
+            state->ySpeed = -8;
+        } else {
+            state->ySpeed = 0;
+        }
+    } else {
+        // 浮いている
+        state->ySpeed += 1;
+    }
+    state->y += state->ySpeed;
+}
+
+void main()
 {
     putchar('0');
     DISPLAY_OFF;
@@ -48,11 +88,25 @@ int main()
 
     set_sprite_data(0, FGTileCount, FGTileLabel);
     set_sprite_tile(0, 0);
-    move_sprite(0, 8, 8*7+16);
+    GameState state;
+    initGameState(&state);
     DISPLAY_ON;
 
+    uint8_t lastButton = 0;
     while (1)
     {
         wait_vbl_done();
+        wait_vbl_done();
+        // 表示
+        move_sprite(0, (uint8_t)(state.x + 8), (uint8_t)(state.y + 16));
+        // 入力
+        uint8_t button = joypad();
+        GameAction action = 0;
+        if ((button & J_A) && !(lastButton & J_A)) {
+            action = 1;
+        }
+        lastButton = button;
+        // 状態更新
+        stepGameState(&state, action);
     }
 }
