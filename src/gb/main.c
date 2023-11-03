@@ -8,9 +8,10 @@
 #include "bg_tile.h"
 #include "fg_tile.h"
 #include "train.h"
+#include "stage_edit.h"
 
 #define BGTileCount 4
-#define FGTileCount 2
+#define FGTileCount 4
 
 void oneGame()
 {
@@ -46,7 +47,7 @@ void oneGame()
 
 void main()
 {
-    printf("START TO PLAY\nSELECT TO TRAIN\n");
+    printf("START TO PLAY\nB TO TRAIN\nA TO EDIT");
     DISPLAY_OFF;
     SHOW_BKG;
     SHOW_SPRITES;
@@ -66,11 +67,15 @@ void main()
         wait_vbl_done();
         // 入力
         uint8_t button = joypad();
+        if (button & J_A)
+        {
+            stage_edit_mode();
+        }
         if (button & J_START)
         {
             oneGame();
         }
-        if (button & J_SELECT)
+        if (button & J_B)
         {
             train_main();
         }
