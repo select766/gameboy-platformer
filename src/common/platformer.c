@@ -111,7 +111,7 @@ Reward PlatformerStep(PlatformerState *state, PlatformerAction action)
         state->isMissed = 1;
         return REWARD_MISS;
     }
-    else if (state->x >= (STAGE_WIDTH - 2) * TILE_SIZE)
+    else if (state->x >= (STAGE_WIDTH - 1) * TILE_SIZE)
     {
         state->done = 1;
         // ゴールした時の高さに応じたスコア。ステージ下端からキャラクターの下端までの距離がスコアになる。最小で1ブロック分。

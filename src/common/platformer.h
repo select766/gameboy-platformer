@@ -1,7 +1,6 @@
 #pragma once
 #include <stdint.h>
-
-extern const unsigned char StageMap[]; // マップデータ
+#include "stage_map.h"
 
 typedef struct
 {
@@ -18,14 +17,6 @@ typedef struct
 typedef uint8_t PlatformerAction;
 typedef int16_t Reward;
 
-#define TILE_SIZE 8
-#define STAGE_TOP_OFFSET 8 // 画面上端からステージ上端までの距離（タイル単位）
-#define STAGE_WIDTH 20 // タイル単位
-#define STAGE_HEIGHT 10 // タイル単位
-#define CHAR_HEIGHT 2 // キャラクターの高さ（タイル単位）
-#define TILE_ID_EMPTY 0x80
-#define TILE_ID_FLOOR 0x81
-#define TILE_ID_GOAL 0x82
 #define MAX_EPISODE_LEN 1000 // このステップ数で終了
 #define REWARD_SCALE 128 // 報酬のスケール。
 #define REWARD_MISS (-10 * REWARD_SCALE) // 穴に落ちた時・タイムアップの報酬

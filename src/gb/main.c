@@ -3,6 +3,7 @@
 #include <gb/gb.h>
 #include <gbdk/console.h>
 
+#include "memcpy.h"
 #include "../common/platformer.h"
 #include "bg_tile.h"
 #include "fg_tile.h"
@@ -50,9 +51,11 @@ void main()
     SHOW_BKG;
     SHOW_SPRITES;
     SPRITES_8x16;
+    memcpy(StageMap, PresetStageMap, sizeof(StageMap));
     // 初回のputs/printfで、フォントデータ（背景データ）の設定、タイルの初期化が行われる。フォントデータと干渉しない場所で独自のタイルを設定する。文字が出力された座標だけでなく画面全体のタイルが初期化されることに注意。
     set_bkg_data(128, BGTileCount, BGTileLabel);
     set_bkg_tiles(0, STAGE_TOP_OFFSET, STAGE_WIDTH, STAGE_HEIGHT, StageMap);
+    set_bkg_tiles(STAGE_WIDTH, STAGE_TOP_OFFSET, 1, STAGE_HEIGHT, GoalMap);
 
     set_sprite_data(0, FGTileCount, FGTileLabel);
     set_sprite_tile(0, 0);
