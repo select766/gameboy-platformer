@@ -67,6 +67,11 @@ uint8_t stage_edit_mode()
             {
                 // 床にする
                 end_of_empty = y;
+                // ブロックを6段以上積むとジャンプしたときに高さがオーバーフローする問題が起こる。
+                if (end_of_empty < 5)
+                {
+                    end_of_empty = 5;
+                }
             }
             for (uint8_t i = 0; i < end_of_empty; i++)
             {
