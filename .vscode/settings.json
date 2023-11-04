@@ -9,6 +9,7 @@
         "bg_tile.h": "c",
         "platformer.h": "c",
         "stdlib.h": "c",
-        "qlearning.h": "c"
+        "qlearning.h": "c",
+        "ui.h": "c"
     }
 }

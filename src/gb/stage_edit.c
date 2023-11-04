@@ -4,30 +4,30 @@
 #include <gbdk/console.h>
 
 #include "../common/platformer.h"
+#include "ui.h"
 
-#define SPRITE_ID 1
-
-void stage_edit_mode()
+uint8_t stage_edit_mode()
 {
+    clear_print_area();
     gotoxy(0, 0);
-    printf("STAGE EDIT MODE\nA TO MAKE FLOOR\nSELECT TO EXIT\n");
+    printf("STAGE EDIT MODE\nA: MAKE FLOOR\nSTART: EXIT");
     wait_vbl_done();
-    set_sprite_tile(SPRITE_ID, 2);
+    set_sprite_tile(SPRITE_CURSOR, 2); // カーソルのスプライト
+    uint8_t x = 1, y = STAGE_HEIGHT - 2; // カーソルの位置。スタートの1つ右、床の1つ上を初期値にする。
 
-    uint8_t x = 1, y = STAGE_HEIGHT - 2;
-    uint8_t last_button = 0xFF;
     while (1)
     {
         wait_vbl_done();
-        move_sprite(SPRITE_ID, x * TILE_SIZE + 8 + 4, y * TILE_SIZE + STAGE_TOP_OFFSET * TILE_SIZE + 16 - 4);
+        move_sprite(SPRITE_CURSOR, x * TILE_SIZE + 8 + 4, y * TILE_SIZE + STAGE_TOP_OFFSET * TILE_SIZE + 16 - 4);
         set_bkg_tiles(0, STAGE_TOP_OFFSET, STAGE_WIDTH, STAGE_HEIGHT, StageMap);
 
-        uint8_t button = joypad();
-        uint8_t new_button = button & ~last_button;
-        if (new_button & J_SELECT)
+        JoypadWithLast button;
+        button = joypad_with_last();
+        uint8_t new_button = button.current & ~button.last;
+        if (new_button & J_START)
         {
-            hide_sprite(SPRITE_ID);
-            return;
+            hide_sprite(SPRITE_CURSOR);
+            return UI_MODE_MANUAL_PLAY;
         }
         if (new_button & J_LEFT)
         {
@@ -47,7 +47,7 @@ void stage_edit_mode()
                 y--;
             }
         }
-        if (button & J_DOWN)
+        if (new_button & J_DOWN)
         {
             if (y < STAGE_HEIGHT - 1) {
                 y++;
@@ -77,6 +77,5 @@ void stage_edit_mode()
                 StageMap[i * STAGE_WIDTH + x] = TILE_ID_FLOOR;
             }
         }
-        last_button = button;
     }
 }
