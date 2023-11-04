@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <gb/gb.h>
 #include <gbdk/console.h>
+#include <gb/cgb.h>
 
 #include "memcpy.h"
 #include "../common/platformer.h"
@@ -47,6 +48,12 @@ void oneGame()
 
 void main()
 {
+    // ゲームボーイカラーの場合、倍速モードを使用する(コンパイラにオプションが必要:-Wm-yc)
+    if (_cpu == CGB_TYPE)
+    {
+        set_default_palette(); // これがないと背景が真っ白になる
+        cpu_fast();
+    }
     printf("START TO PLAY\nB TO TRAIN\nA TO EDIT");
     DISPLAY_OFF;
     SHOW_BKG;
