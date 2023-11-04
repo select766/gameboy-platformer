@@ -19,7 +19,8 @@ typedef struct
     PlatformerState state;
     uint8_t cycle;
     uint8_t updated;
-    int16_t trained_episodes;
+    // 学習したエピソード数（GBCの倍速モードで5時間程度でオーバーフローする）
+    uint16_t trained_episodes;
     uint8_t done_wait;
     int16_t episode_reward;
     int16_t last_score;
@@ -100,7 +101,7 @@ void train_vbl()
     {
         ts->updated = 0;
         gotoxy(0, 2);
-        printf("%d episodes", ts->trained_episodes);
+        printf("%u episodes", ts->trained_episodes);
     }
 }
 
@@ -131,10 +132,10 @@ void train_main()
     }
 
     // main関数側では、割り込み処理をしていない間ずっとモデルの学習を行う。
-    int trained_episodes = 0;
+    uint16_t trained_episodes = 0;
     while (1)
     {
-        initrand((unsigned int)trained_episodes);
+        initrand(trained_episodes);
         TrainEpisode(q_state);
         // テストにランダム性はないため、ここで評価は不要。表示側で実行したエピソードのスコアを表示する。
 
