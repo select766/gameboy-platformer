@@ -60,6 +60,7 @@ void train_vbl()
         ts->updated = 0;
         gotoxy(0, 0);
         printf("%d episodes", ts->epoch);
+        printf("\n%d", sys_time); // sys_timeは、VBL割り込み関数が呼ばれた回数（速度確認用）
     }
 }
 
@@ -94,10 +95,7 @@ void train_main()
         // テストにランダム性はないため、ここで評価は不要。表示側で実行したエピソードのスコアを表示する。
 
         epoch++;
-        __critical
-        {
-            ts->epoch = epoch;
-            ts->updated = 1;
-        }
+        ts->epoch = epoch;
+        ts->updated = 1;
     }
 }
