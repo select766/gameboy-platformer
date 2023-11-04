@@ -23,36 +23,37 @@ void stage_edit_mode()
         set_bkg_tiles(0, STAGE_TOP_OFFSET, STAGE_WIDTH, STAGE_HEIGHT, StageMap);
 
         uint8_t button = joypad();
-        if ((button & J_SELECT) && !(last_button & J_SELECT))
+        uint8_t new_button = button & ~last_button;
+        if (new_button & J_SELECT)
         {
-            move_sprite(SPRITE_ID, 0, 0); // スプライトを消す
+            hide_sprite(SPRITE_ID);
             return;
         }
-        if ((button & J_LEFT) && !(last_button & J_LEFT))
+        if (new_button & J_LEFT)
         {
             if (x > 0) {
                 x--;
             }
         }
-        if ((button & J_RIGHT) && !(last_button & J_RIGHT))
+        if (new_button & J_RIGHT)
         {
             if (x < STAGE_WIDTH - 1) {
                 x++;
             }
         }
-        if ((button & J_UP) && !(last_button & J_UP))
+        if (new_button & J_UP)
         {
             if (y > 0) {
                 y--;
             }
         }
-        if ((button & J_DOWN) && !(last_button & J_DOWN))
+        if (button & J_DOWN)
         {
             if (y < STAGE_HEIGHT - 1) {
                 y++;
             }
         }
-        if ((button & J_A) && !(last_button & J_A))
+        if (new_button & J_A)
         {
             // 高さyまでのタイルを床にする。
             // 例外として、y == STAGE_HEIGHT - 1 かつ現在の床の高さが1の場合は、穴にする。
